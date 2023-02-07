@@ -1,8 +1,8 @@
-import Home from '@/app/page'
+import About from '@/app/pages/about'
 
 
 function AboutPage() {
-    return <h1>about</h1>
+    return <About />
 }
   
 export default AboutPage

@@ -7,14 +7,19 @@ type UseGetUser = {
     errors?: Error[];
 }
 export const useGetUsers = (): UseGetUser => {
-    const loading = true;
+    const [loading, setIsLoading] = useState<boolean>(false)
     const [users, setUsers] = useState<User[]|undefined>(undefined)
     const [errors, setErrors] = useState<Error[]|undefined>(undefined)
 
-    fetch('/api/users').then((response) => {
-        console.log('f: response', response)
-    }).catch(ex => {
-
+    fetch('/api/users')
+    .then(async(response) => {
+        const data = await response.json()
+        setIsLoading(false)                    
+        // setUsers(data)
+    })
+    .catch(ex => {
+        setIsLoading(false)
+        setErrors([{code: 1, message: 'error retrieving users from api'}])
     })
 
     return {
