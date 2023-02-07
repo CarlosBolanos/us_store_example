@@ -1,0 +1,30 @@
+version: '3'
+services:    
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./us-store-api
+    volumes:
+      - /app/node_modules
+      - ./us-store-api:/app
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: ./us-store-web
+    volumes:
+      - /app/node_modules
+      - ./us-store-web:/app
+      - ./us-store-web/.next:/app/.next
+    
+    depends_on:
+      - api    
+  reverse-proxy:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./us-store-reverse-proxy
+    ports:
+      - '80:80'
+    depends_on:      
+      - api
+      - web
