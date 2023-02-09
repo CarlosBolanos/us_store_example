@@ -7,6 +7,16 @@ services:
     volumes:
       - /app/node_modules
       - ./us-store-api:/app
+  graphql:
+    build:
+      dockerfile: Dockerfile
+      context: ./us-store-graphql
+    volumes:
+      - /app/node_modules
+      - ./us-store-graphql:/app
+    depends_on:
+      - api
+ 
   web:
     build:
       dockerfile: Dockerfile
@@ -14,10 +24,10 @@ services:
     volumes:
       - /app/node_modules
       - ./us-store-web:/app
-      - ./us-store-web/.next:/app/.next
-    
+      - ./us-store-web/.next:/app/.next    
     depends_on:
-      - api    
+      - graphql    
+  
   reverse-proxy:
     restart: always
     build:
@@ -26,5 +36,5 @@ services:
     ports:
       - '80:80'
     depends_on:      
-      - api
-      - web
+      - graphql
+      # - web
