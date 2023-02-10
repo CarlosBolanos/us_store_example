@@ -1,17 +1,18 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
+import { Observable } from 'rxjs';
 import { User } from './user.model';
 
 @Injectable()
 export class UsersService {
-  getUserById(id: number): User {
-    return { id, firstName: 'carlos', lastName: 'bolanos' };
+  constructor(private readonly httpService: HttpService){}
+
+  getUserById(id: number): Observable<AxiosResponse<User>>  {
+    return this.httpService.get(`http://api:5000/users/${id}`);
   }
 
-  getUsers(): User[] {
-    console.log('f: getUsers');
-    return [
-      { id: 1, firstName: 'raul', lastName: 'bolanos' },
-      { id: 2, firstName: 'esperanza', lastName: 'rodriguez' },
-    ];
+  getUsers(): Observable<AxiosResponse<User[]>> {        
+    return this.httpService.get(`http://api:5000/users`)      
   }
 }

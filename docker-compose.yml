@@ -7,6 +7,9 @@ services:
     volumes:
       - /app/node_modules
       - ./us-store-api:/app
+    networks:
+      - my-net
+
   graphql:
     build:
       dockerfile: Dockerfile
@@ -16,6 +19,8 @@ services:
       - ./us-store-graphql:/app
     depends_on:
       - api
+    networks:
+      - my-net
  
   web:
     build:
@@ -26,7 +31,9 @@ services:
       - ./us-store-web:/app
       - ./us-store-web/.next:/app/.next    
     depends_on:
-      - graphql    
+      - graphql  
+    networks:
+      - my-net
   
   reverse-proxy:
     restart: always
@@ -37,4 +44,9 @@ services:
       - '80:80'
     depends_on:      
       - graphql
-      # - web
+      - web
+    networks:
+      - my-net
+  
+networks:
+  my-net:
