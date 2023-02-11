@@ -3,33 +3,58 @@ services:
   api:
     build:
       dockerfile: Dockerfile
-      context: ./us-store-api
+      context: ./domain-services/user-api
     volumes:
       - /app/node_modules
-      - ./us-store-api:/app
+      - ./domain-services/user-api:/app
     networks:
       - my-net
 
+  spinner1:
+    build:
+      dockerfile: Dockerfile
+      context: ./graphql/users-spinner
+    volumes:
+      - /app/node_modules
+      - ./graphql/users-spinner:/app
+    depends_on:
+      - api
+    networks:
+      - my-net
+
+  spinner2:
+    build:
+      dockerfile: Dockerfile
+      context: ./graphql/posts-spinner
+    volumes:
+      - /app/node_modules
+      - ./graphql/posts-spinner:/app
+    depends_on:
+      - api
+    networks:
+      - my-net
+  
   graphql:
     build:
       dockerfile: Dockerfile
-      context: ./us-store-graphql
+      context: ./graphql/federated-gateway
     volumes:
       - /app/node_modules
-      - ./us-store-graphql:/app
+      - ./graphql/federated-gateway:/app
     depends_on:
-      - api
+      - spinner1
+      - spinner2
     networks:
       - my-net
  
   web:
     build:
       dockerfile: Dockerfile
-      context: ./us-store-web
+      context: ./web
     volumes:
       - /app/node_modules
-      - ./us-store-web:/app
-      - ./us-store-web/.next:/app/.next    
+      - ./web:/app
+      - ./web/.next:/app/.next    
     depends_on:
       - graphql  
     networks:
@@ -39,10 +64,10 @@ services:
     restart: always
     build:
       dockerfile: Dockerfile
-      context: ./us-store-reverse-proxy
+      context: ./reverse-proxy
     ports:
       - '80:80'
-    depends_on:      
+    depends_on:        
       - graphql
       - web
     networks:
