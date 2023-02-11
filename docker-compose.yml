@@ -1,12 +1,22 @@
 version: '3'
 services:    
-  api:
+  users-api:
     build:
       dockerfile: Dockerfile
-      context: ./domain-services/user-api
+      context: ./domain-services/users-api
     volumes:
       - /app/node_modules
-      - ./domain-services/user-api:/app
+      - ./domain-services/users-api:/app
+    networks:
+      - my-net
+
+  posts-api:
+    build:
+      dockerfile: Dockerfile
+      context: ./domain-services/posts-api
+    volumes:
+      - /app/node_modules
+      - ./domain-services/posts-api:/app
     networks:
       - my-net
 
@@ -18,7 +28,7 @@ services:
       - /app/node_modules
       - ./graphql/users-spinner:/app
     depends_on:
-      - api
+      - users-api
     networks:
       - my-net
 
@@ -30,7 +40,7 @@ services:
       - /app/node_modules
       - ./graphql/posts-spinner:/app
     depends_on:
-      - api
+      - posts-api
     networks:
       - my-net
   

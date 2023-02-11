@@ -9,10 +9,10 @@ export class UsersService {
   constructor(private readonly httpService: HttpService){}
 
   getUserById(id: number): Observable<AxiosResponse<User>>  {
-    return this.httpService.get(`http://api:5000/users/${id}`);
+    return this.httpService.get(`http://users-api:5001/users/${id}`);
   }
 
   getUsers(): Observable<AxiosResponse<User[]>> {        
-    return this.httpService.get(`http://api:5000/users`)      
+    return this.httpService.get(`http://users-api:5001/users`)      
   }
 }

@@ -1,24 +1,23 @@
+import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
+import { Observable } from 'rxjs';
 import { Post } from './models/post.model';
 
 @Injectable()
 export class PostsService {
-  private posts: Post[] = [
-    { authorId: 1, id: 1, title: 'Lorem Ipsum' },
-    { authorId: 1, id: 2, title: 'Foo' },
-    { authorId: 2, id: 3, title: 'Bar' },
-    { authorId: 2, id: 4, title: 'Hello World' },
-  ];
-
-  findAllByAuthorId(authorId: number): Post[] {
-    return this.posts.filter((post) => post.authorId === Number(authorId));
+  constructor(private readonly httpService: HttpService){}
+  
+  findAllByAuthorId(authorId: number): Observable<AxiosResponse<Post[]>> {
+    return this.httpService.get(`http://posts-api:5002/author/${authorId}/posts`);
   }
 
-  findOne(postId: number): Post {
-    return this.posts.find((post) => post.id === postId);
+  findOne(postId: number): Observable<AxiosResponse<Post>> {
+    return this.httpService.get(`http://posts-api:5002/posts/${postId}`);
   }
 
-  findAll(): Post[] {
-    return this.posts;
+  findAll(): Observable<AxiosResponse<Post[]>> {
+    console.log('f: spinner.findAll')
+    return this.httpService.get(`http://posts-api:5002/posts`);
   }
 }

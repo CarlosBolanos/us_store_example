@@ -12,6 +12,7 @@ export class UsersResolver {
 
   @Query((returns) => User)
   user(@Args({ name: 'id', type: () => ID }) id: number): Observable<User> {
+    console.log('f: spinner.user')
     return this.usersService.getUserById(id)
       .pipe(
         map(resp => resp.data)
@@ -30,6 +31,7 @@ export class UsersResolver {
 
   @ResolveReference()
   resolveReference(reference: { __typename: string; id: number }): Observable<User> {
+    console.log('f: spinner.user.resolveReference')
     return this.usersService.getUserById(reference.id)
     .pipe(
       map(resp => resp.data)
